@@ -1,0 +1,95 @@
+#include <stdio.h>
+#include <stdlib.h>
+//#include <float.h>  // FLT_EPSILON DBL_EPSILON LDBL_EPSILON
+//#include <math.h>
+
+#include "linkedList.h"
+
+/** TO DO
+ * @brief compute 'in place' the derive of a polynomial 
+ * @param [in, out] adrPolyHeadPt address of a polynomial's head pointer
+ */
+void poly_derive(cell_t ** adrPolyHeadPt)
+{
+    if (*adrPolyHeadPt != NULL)
+    {
+        cell_t *    current   = *adrPolyHeadPt;
+        cell_t **   previous = adrPolyHeadPt;
+        cell_t *    temp;
+        int         is_deleted;
+
+        while (current != NULL)
+        {
+            is_deleted              = 0;
+            current->val.coef       = (current->val.coef) * (current->val.degree);
+            current->val.degree    -= 1;
+
+            if (current->val.degree < 0)
+            {
+                temp        = current->next;
+                *previous   = temp;
+                free(current);
+                current     = temp;
+                is_deleted  = 1;
+            }
+
+            if (is_deleted != 1)
+            {
+                previous = &(current->next);
+                current  = current->next;
+            }
+        }
+    }
+}
+
+/** TO DO
+ * @brief compute P1 = P1 + P2, P2 become empty
+ * @param adrPolyHeadPt1 [in, out] address of the 1st polynomial's head pointer
+ * @param adrPolyHeadPt2 [in, out] address of the 2nd polynomial's head pointer
+ */
+void poly_add(cell_t ** adrPolyHeadPt1, cell_t ** adrPolyHeadPt2)
+{
+    cell_t *    current1;
+    cell_t *    current2;
+    cell_t **   previous;
+    cell_t * tmp;
+
+    if (*adrPolyHeadPt1 == NULL && *adrPolyHeadPt2)
+    {
+        *adrPolyHeadPt1 = *adrPolyHeadPt2;
+    }
+    else
+    {
+        if (*adrPolyHeadPt2)
+        {
+            current2 = *adrPolyHeadPt2;
+            current1 = *adrPolyHeadPt1;
+            while (current2 && current1)
+            {
+                previous = LL_search_prev(&current1, &(current2->val), &monom_degree_cmp);
+                if (monom_degree_cmp(&((*previous)->val), &(current2->val)) < 0)
+                {
+                    LL_add_cell(previous, LL_create_cell(&(current2->val)));
+                }
+                else
+                {
+                    (*previous)->val.coef += (current2->val.coef);
+                }
+                current2 = current2->next;
+                current1 = current1->next;
+            }
+        }
+    }
+    LL_free_list(adrPolyHeadPt2);
+}
+
+/** TO DO
+ * @brief compute P1 * P2
+ * @param xxx [in, out] head pointer of the 1st polynomial
+ * @param xxx [in, out] head pointer of the 2nd polynomial
+ * @return P1*P2
+ */
+// poly_prod()
+// {
+// 	// TO DO
+// }
