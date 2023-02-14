@@ -70,6 +70,9 @@ TEST(LL_create_cell)
 	monom_save2file(file, &(new->val));
 	fclose(file);
 	CHECK( 0 == strcmp(buffer, "(3.25, 17) " ));
+
+	// Libération
+	free(new);
 }
 
 // test d'insertion de cellule - liste a une cellule
@@ -91,8 +94,8 @@ TEST(LL_add_cell1)
 	CHECK( list->val.degree == 17 );  
 	CHECK( list->next == NULL );
 
-	free(list); // liberer la cellule
-	list = NULL;
+	// Libération
+	LL_free_list(&list);
 }
 
 
@@ -122,7 +125,7 @@ TEST(LL_add_cell2)
 	CHECK( list->next->val.coef   == 3.45);
 	CHECK( list->next->val.degree == 17);
 	
-	// liberer la liste
+	// Libération de la liste
 	LL_free_list(&list);
 	CHECK( NULL == list );
 }
@@ -164,9 +167,10 @@ TEST(LL_add_cell3)
 	CHECK( (list->next)->next->val.degree == 17);
 	
 
-	// liberer la liste
+	// Libération
 	LL_free_list(&list);
 	CHECK( NULL == list );
+
 }
 
 
@@ -178,7 +182,7 @@ TEST(LL_create_list_fromFileName0)
 	printf("\nCreate a linked list from file name0: \n");
 
 	LL_create_list_fromFileName(&list, "notExist.txt");
-	CHECK( NULL != list );
+	CHECK( NULL == list );
 }
 
 // Création d'un polynôme à partir d'un fichier
@@ -204,6 +208,9 @@ TEST(LL_create_list_fromFileName)
 	CHECK	( (list->next)->next->val.degree ==  6);
 
 	//LL_print_stdout(&list);
+
+	// Libération
+	LL_free_list(&list);
 }
 
 
@@ -229,6 +236,9 @@ TEST(LL_save_list_toFile)
 	fclose(file);
 	CHECK (0 == strcmp(buffer, "(5.00, 2) (17.00, 3) (10.00, 6) "));
 	printf("buffer = %s\n", buffer);
+
+	// Libération
+	LL_free_list(&list);
 }
 
 
@@ -254,6 +264,9 @@ TEST(LL_search_prev)
 
 	CHECK ((*previous)->val.degree == 5);
 	CHECK ((*previous)->val.coef   == 3);
+
+	// Libération
+	LL_free_list(&list);
 }
 
 // Test d'insertion de cellule - liste a n cellules
@@ -266,7 +279,7 @@ TEST(LL_add_cell_n)
 	CHECK ( NULL == list);
 
 	// Création d'une liste à n cellules
-	LL_create_list_fromFileName(&list, "./files/polynomial_n.txt");
+	LL_create_list_fromFileName(&list, "./files/polynomialn.txt");
 	CHECK (NULL != list);
 
 	// TO DO
@@ -362,6 +375,9 @@ TEST(LL_del_cell)
 	CHECK (&list == previous_cell);
 	LL_del_cell(previous_cell);
 
+	// Libération
+	LL_free_list(&list);
+
 }
 
 // Libération de la liste
@@ -410,6 +426,9 @@ TEST(LL_save_list_toFileName)
 	// Sauvegarde de la liste dans le fichier dont le nom est spécifié
 	char * filename = "./files/polynomial1backup.txt";
 	LL_save_list_toFileName(list, filename, &monom_save2file);
+
+	// Libération
+	LL_free_list(&list);
 }
 
 

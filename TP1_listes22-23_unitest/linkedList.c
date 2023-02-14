@@ -45,10 +45,12 @@ void LL_add_cell(cell_t ** previous_cell, cell_t * new_cell)
             new_cell->next = (*previous_cell);
             *previous_cell = new_cell;
         }
-        else
+        else if ((*previous_cell)->val.degree < new_cell->val.degree)
         {
             new_cell->next = (*previous_cell)->next;
             (*previous_cell)->next = new_cell;
+        }else{
+            (*previous_cell)->val.coef += new_cell->val.coef;
         }
     }
     else
@@ -80,10 +82,21 @@ cell_t ** LL_create_list_fromFileName(cell_t ** adrHeadPt, char * filename)
 
             new_cell      = LL_create_cell(&m);
             previous_cell = LL_search_prev(adrHeadPt, &(new_cell->val), &monom_degree_cmp);
-            
+
             if(*previous_cell != NULL)
             {
-                LL_add_cell(&(*previous_cell)->next, new_cell);
+                if (monom_degree_cmp(&(*previous_cell)->val, &new_cell->val) == 0)
+                {
+                    (*previous_cell)->val.coef       += new_cell->val.coef;
+                }
+                else if ((*previous_cell)->next && monom_degree_cmp(&(*previous_cell)->next->val, &new_cell->val) == 0)
+                {
+                    (*previous_cell)->next->val.coef += new_cell->val.coef;
+                }
+                else
+                {
+                    LL_add_cell(&(*previous_cell), new_cell);
+                }
             }
             else
             {
@@ -103,7 +116,7 @@ cell_t ** LL_create_list_fromFileName(cell_t ** adrHeadPt, char * filename)
 void LL_save_list_toFile(FILE * stream, cell_t * list, void (*ptf) (FILE *, monom_t *))
 {
     if (stream != NULL)
-    {
+    {   
         cell_t * cell = list;
 
         while (cell != NULL)
@@ -124,6 +137,7 @@ void LL_save_list_toFileName(cell_t * list, char * filename, void (*ptf)(FILE *,
 {
     FILE * file = fopen(filename, "w+");
     LL_save_list_toFile(file, list, ptf);
+    fclose(file);
 } 
 
 /** TO DO

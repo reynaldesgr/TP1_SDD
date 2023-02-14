@@ -22,6 +22,6 @@ void poly_add(cell_t ** adrPolyHeadPt1, cell_t ** adrPolyHeadPt2);
  * @param xxx [in, out] head pointer of the 2nd polynomial
  * @return P1*P2
  */
-// poly_prod();
+cell_t * poly_prod (cell_t * adrHeadPt1, cell_t * adrHeadPt2);
 
 #endif

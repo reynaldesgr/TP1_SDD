@@ -52,7 +52,6 @@ void poly_add(cell_t ** adrPolyHeadPt1, cell_t ** adrPolyHeadPt2)
     cell_t *    current1;
     cell_t *    current2;
     cell_t **   previous;
-    cell_t * tmp;
 
     if (*adrPolyHeadPt1 == NULL && *adrPolyHeadPt2)
     {
@@ -69,27 +68,77 @@ void poly_add(cell_t ** adrPolyHeadPt1, cell_t ** adrPolyHeadPt2)
                 previous = LL_search_prev(&current1, &(current2->val), &monom_degree_cmp);
                 if (monom_degree_cmp(&((*previous)->val), &(current2->val)) < 0)
                 {
+                    //printf("\n Ajout de : %.3lf %d après %.3lf %d \n", current2->val.coef, current2->val.degree,(*previous)->val.coef, (*previous)->val.degree);
                     LL_add_cell(previous, LL_create_cell(&(current2->val)));
                 }
                 else
                 {
+                    //printf("\nAddition de : %.3lf %d avec %.3lf %d \n", current1->val.coef, current1->val.degree,(*previous)->val.coef, (*previous)->val.degree); 
                     (*previous)->val.coef += (current2->val.coef);
                 }
                 current2 = current2->next;
                 current1 = current1->next;
             }
+
         }
     }
-    LL_free_list(adrPolyHeadPt2);
+    if (adrPolyHeadPt2 != adrPolyHeadPt1)
+    {
+        LL_free_list(adrPolyHeadPt2);
+    }
 }
 
 /** TO DO
  * @brief compute P1 * P2
- * @param xxx [in, out] head pointer of the 1st polynomial
- * @param xxx [in, out] head pointer of the 2nd polynomial
+ * @param adrHeadPt1 [in, out] head pointer of the 1st polynomial
+ * @param adrHeadPt2 [in, out] head pointer of the 2nd polynomial
  * @return P1*P2
  */
-// poly_prod()
-// {
-// 	// TO DO
-// }
+cell_t * poly_prod (cell_t * adrHeadPt1, cell_t * adrHeadPt2)
+{
+    cell_t ** previous_cell;
+
+    cell_t * adrHeadPt;
+    cell_t * current1;
+    cell_t * current2;
+    cell_t * new_cell;
+
+    monom_t  prod;
+
+    LL_init_list(&adrHeadPt);
+
+    current1 = adrHeadPt1;
+    current2 = adrHeadPt2;
+
+    while (current1){
+        while (current2){
+            prod.coef   = current1->val.coef   * current2->val.coef;
+            prod.degree = current1->val.degree + current2->val.degree;
+
+            new_cell       = LL_create_cell(&prod);
+            previous_cell = LL_search_prev(&adrHeadPt, &prod, monom_degree_cmp);
+
+            if(*previous_cell){
+                if (monom_degree_cmp(&(*previous_cell)->val, &new_cell->val) == 0)
+                {
+                    (*previous_cell)->val.coef       += new_cell->val.coef;
+                }
+                else if ((*previous_cell)->next && monom_degree_cmp(&(*previous_cell)->next->val, &new_cell->val) == 0)
+                {
+                    (*previous_cell)->next->val.coef += new_cell->val.coef;
+                }
+                else
+                {
+                    LL_add_cell(&(*previous_cell), new_cell);
+                }
+            }else{
+                LL_add_cell(previous_cell, new_cell);
+            }
+            current2 = current2->next;
+        }
+        current2 = adrHeadPt2;
+        current1 = current1->next;
+    }
+
+    return adrHeadPt;
+}
