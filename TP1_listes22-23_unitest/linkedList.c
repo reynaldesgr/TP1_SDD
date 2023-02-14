@@ -88,10 +88,12 @@ cell_t ** LL_create_list_fromFileName(cell_t ** adrHeadPt, char * filename)
                 if (monom_degree_cmp(&(*previous_cell)->val, &new_cell->val) == 0)
                 {
                     (*previous_cell)->val.coef       += new_cell->val.coef;
+                    free(new_cell);
                 }
                 else if ((*previous_cell)->next && monom_degree_cmp(&(*previous_cell)->next->val, &new_cell->val) == 0)
                 {
                     (*previous_cell)->next->val.coef += new_cell->val.coef;
+                    free(new_cell);
                 }
                 else
                 {

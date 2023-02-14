@@ -53,36 +53,42 @@ void poly_add(cell_t ** adrPolyHeadPt1, cell_t ** adrPolyHeadPt2)
     cell_t *    current2;
     cell_t **   previous;
 
-    if (*adrPolyHeadPt1 == NULL && *adrPolyHeadPt2)
+    if (*adrPolyHeadPt1 == NULL && *adrPolyHeadPt2 != NULL)
     {
         *adrPolyHeadPt1 = *adrPolyHeadPt2;
     }
     else
     {
-        if (*adrPolyHeadPt2)
+        if (*adrPolyHeadPt2 != NULL)
         {
-            current2 = *adrPolyHeadPt2;
             current1 = *adrPolyHeadPt1;
-            while (current2 && current1)
+            current2 = *adrPolyHeadPt2;
+
+            while (current1 != NULL && current2 != NULL)
             {
                 previous = LL_search_prev(&current1, &(current2->val), &monom_degree_cmp);
                 if (monom_degree_cmp(&((*previous)->val), &(current2->val)) < 0)
                 {
-                    //printf("\n Ajout de : %.3lf %d après %.3lf %d \n", current2->val.coef, current2->val.degree,(*previous)->val.coef, (*previous)->val.degree);
-                    LL_add_cell(previous, LL_create_cell(&(current2->val)));
+                    if ((*previous)->next != NULL && monom_degree_cmp(&((*previous)->next->val), &(current2->val)) == 0)
+                    {
+                        (*previous)->next->val.coef += (current2->val.coef);
+                    }
+                    else
+                    {
+                        LL_add_cell(previous, LL_create_cell(&(current2->val)));
+                    }
                 }
                 else
                 {
-                    //printf("\nAddition de : %.3lf %d avec %.3lf %d \n", current1->val.coef, current1->val.degree,(*previous)->val.coef, (*previous)->val.degree); 
                     (*previous)->val.coef += (current2->val.coef);
                 }
                 current2 = current2->next;
                 current1 = current1->next;
+               
             }
-
         }
     }
-    if (adrPolyHeadPt2 != adrPolyHeadPt1)
+    if (adrPolyHeadPt1 != adrPolyHeadPt2)
     {
         LL_free_list(adrPolyHeadPt2);
     }
@@ -116,16 +122,18 @@ cell_t * poly_prod (cell_t * adrHeadPt1, cell_t * adrHeadPt2)
             prod.degree = current1->val.degree + current2->val.degree;
 
             new_cell       = LL_create_cell(&prod);
-            previous_cell = LL_search_prev(&adrHeadPt, &prod, monom_degree_cmp);
+            previous_cell  = LL_search_prev(&adrHeadPt, &prod, monom_degree_cmp);
 
             if(*previous_cell){
                 if (monom_degree_cmp(&(*previous_cell)->val, &new_cell->val) == 0)
                 {
                     (*previous_cell)->val.coef       += new_cell->val.coef;
+                    free(new_cell);
                 }
                 else if ((*previous_cell)->next && monom_degree_cmp(&(*previous_cell)->next->val, &new_cell->val) == 0)
                 {
                     (*previous_cell)->next->val.coef += new_cell->val.coef;
+                    free(new_cell);
                 }
                 else
                 {
@@ -139,6 +147,5 @@ cell_t * poly_prod (cell_t * adrHeadPt1, cell_t * adrHeadPt2)
         current2 = adrHeadPt2;
         current1 = current1->next;
     }
-
     return adrHeadPt;
 }

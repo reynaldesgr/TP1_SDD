@@ -128,22 +128,24 @@ TEST(Poly_addition1)
 TEST(Poly_addition2)
 {
 	printf("\nTest Addition 2...\n");
-
+	
 	cell_t * poly1;
 	cell_t * poly2;
+	cell_t * poly3;
 
 	LL_init_list(&poly1);
 	LL_init_list(&poly2);
+	LL_init_list(&poly3);
 
 	char buffer[1024];
 
 	FILE * file = fmemopen(buffer, 1024, "w");
 	REQUIRE(NULL != file);
-
-
+	
 	// Récupération des polynôme via. fichiers
 	LL_create_list_fromFileName(&poly1, "./files/polyadd1.txt");
 	LL_create_list_fromFileName(&poly2, "./files/polyadd2.txt");
+	LL_create_list_fromFileName(&poly3, "./files/polyadd3.txt");
 
 	// Addition : P1 + P1
 	poly_add(&poly1, &poly1);
@@ -159,6 +161,14 @@ TEST(Poly_addition2)
 	LL_save_list_toFile(file, poly1, monom_save2file);
 	fclose(file);
 	CHECK(0 == strcmp(buffer, "(10.00, 1) (6.00, 2) (12.00, 3) (15.00, 4) (7.00, 5) (5.00, 6) (8.00, 9) (10.00, 10) "));
+
+	// Addition : (2P1 + P2) + P3
+	file = fmemopen(buffer, 1024, "w");
+	poly_add(&poly1, &poly3);
+	LL_save_list_toFile(file, poly1, monom_save2file);
+	fclose(file);
+	printf("buffer = %s\n", buffer);
+	CHECK(0 == strcmp(buffer, "(10.00, 1) (6.00, 2) (12.00, 3) (15.00, 4) (7.00, 5) (11.00, 6) (7.00, 8) (8.00, 9) (19.00, 10) "));
 
 	// Libération
 	LL_free_list(&poly1);
@@ -269,6 +279,15 @@ TEST(Poly_produit)
 	LL_create_list_fromFileName(&poly1, "./files/polyprod1.txt");
 
 	prod = poly_prod(poly1, poly_prod(poly1, poly1));
+
+	LL_save_list_toFile(file, prod, monom_save2file);
+	fclose(file);
+
+	CHECK (0 == strcmp(buffer, "(1.00, 6) (9.00, 8) (27.00, 10) (27.00, 12) "));
+
+	// Libération
+	LL_free_list(&poly1);
+	LL_free_list(&poly2);
 }
 
 // Test : Ecriture d'un polynome dans un fichier
@@ -289,8 +308,8 @@ TEST(LL_save_list_toFileName)
 	file = fopen("./files/polybackupfilename1.txt", "r");
 
 	fgets(buffer, 1024, file);
-	
 	CHECK (0 == strcmp(buffer, "(5.00, 1) (4.00, 2) (5.00, 3) (6.00, 4) (3.00, 5) "));
+	
 	// Libération
 	LL_free_list(&poly);
 }
