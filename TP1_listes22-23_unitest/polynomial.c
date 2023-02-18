@@ -116,30 +116,35 @@ cell_t * poly_prod (cell_t * adrHeadPt1, cell_t * adrHeadPt2)
     current1 = adrHeadPt1;
     current2 = adrHeadPt2;
 
-    while (current1){
-        while (current2){
-            prod.coef   = current1->val.coef   * current2->val.coef;
+    while (current1 != NULL)
+    {
+        while (current2 != NULL)
+        {
+            prod.coef = current1->val.coef * current2->val.coef;
             prod.degree = current1->val.degree + current2->val.degree;
 
-            new_cell       = LL_create_cell(&prod);
+            new_cell = LL_create_cell(&prod);
             previous_cell  = LL_search_prev(&adrHeadPt, &prod, monom_degree_cmp);
 
-            if(*previous_cell){
+            if(*previous_cell)
+            {
                 if (monom_degree_cmp(&(*previous_cell)->val, &new_cell->val) == 0)
                 {
-                    (*previous_cell)->val.coef       += new_cell->val.coef;
+                    (*previous_cell)->val.coef += new_cell->val.coef;
                     free(new_cell);
                 }
-                else if ((*previous_cell)->next && monom_degree_cmp(&(*previous_cell)->next->val, &new_cell->val) == 0)
+                else if ((*previous_cell)->next != NULL && monom_degree_cmp(&(*previous_cell)->next->val, &new_cell->val) == 0)
                 {
                     (*previous_cell)->next->val.coef += new_cell->val.coef;
                     free(new_cell);
                 }
                 else
                 {
-                    LL_add_cell(&(*previous_cell), new_cell);
+                    LL_add_cell(previous_cell, new_cell);
                 }
-            }else{
+            }
+            else
+            {
                 LL_add_cell(previous_cell, new_cell);
             }
             current2 = current2->next;
@@ -147,5 +152,6 @@ cell_t * poly_prod (cell_t * adrHeadPt1, cell_t * adrHeadPt2)
         current2 = adrHeadPt2;
         current1 = current1->next;
     }
+
     return adrHeadPt;
 }
