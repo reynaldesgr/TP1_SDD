@@ -8,9 +8,9 @@
 # et la commande 'make polynomial' pour les operations liees aux polynomes
 #
 
-CC = gcc               # choix du compilateur
+CC = gcc               	  # choix du compilateur
 CFLAGS = -Wall -Wextra -g # options de compilation
-LDFLAGS =              # options de l'edition de lien
+LDFLAGS =                 # options de l'edition de lien
 
 #liste des fichiers source et objet communs
 SRC_COMMUN = teZZ.c linkedList.c valCell.c

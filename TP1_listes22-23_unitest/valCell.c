@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include "valCell.h"
 
-/** TO DO
+/** monom_degree_cmp
  * @brief Compare the degree of two monomials
  * @param [in] xxx address of the first monomial
  * @param [in] xxx address of the second monomial
@@ -27,7 +27,7 @@ int monom_degree_cmp(monom_t * m1, monom_t * m2)
 }
 
 
-/** TO DO
+/** monom_save2file
  * @brief write the information of a monomial to the given output stream
  * @param [in] file file pointer of an output stream
  * @param [in] m address of a monomial

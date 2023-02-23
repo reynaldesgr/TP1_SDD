@@ -34,8 +34,10 @@ TEST(monom_save2file)
 	FILE * file = fmemopen(buffer, 1024, "w");
 	REQUIRE ( NULL != file);
 
+	// Appel monom_save2file
 	monom_save2file(file, &v);
 
+	// Fermeture du fichier
 	fclose(file);
 
 	CHECK( 0 == strcmp(buffer, "(5.00, 7) ") ); 
@@ -188,12 +190,12 @@ TEST(LL_create_list_fromFileName0)
 // Création d'un polynôme à partir d'un fichier
 TEST(LL_create_list_fromFileName) 
 {
-	printf("\n Test : LL_save_list_fromFileName... \n");	
+	printf("\n Test : LL_create_list_fromFileName... \n");	
 	cell_t * list;
 	LL_init_list(&list);
 
 	// Initialisation de la liste
-	char * name = "./files/polynomial1.txt";
+	char * name = "./files/creation/polynomial1.txt";
 
 	// Création de la liste à partir du fichier ("polynomial1.txt")
 	LL_create_list_fromFileName(&list, name);
@@ -224,7 +226,7 @@ TEST(LL_save_list_toFile)
 	LL_init_list(&list);
 	CHECK( NULL == list );
 
-	LL_create_list_fromFileName(&list, "./files/polynomial1.txt");
+	LL_create_list_fromFileName(&list, "./files/creation/polynomial1.txt");
 	CHECK( NULL != list);
 
 	char buffer[1024];
@@ -252,7 +254,7 @@ TEST(LL_search_prev)
 	CHECK ( NULL == list);
 
 	// Création de la liste via. un fichier
-	LL_create_list_fromFileName(&list, "./files/polynomial3.txt");
+	LL_create_list_fromFileName(&list, "./files/creation/polynomial3.txt");
 	CHECK (NULL != list);
 
 	CHECK (list->val.coef   == 2);
@@ -279,7 +281,7 @@ TEST(LL_add_cell_n)
 	CHECK ( NULL == list);
 
 	// Création d'une liste à n cellules
-	LL_create_list_fromFileName(&list, "./files/polynomialn.txt");
+	LL_create_list_fromFileName(&list, "./files/creation/polynomialn.txt");
 	CHECK (NULL != list);
 
 	// TO DO
@@ -335,7 +337,7 @@ TEST(LL_del_cell)
 	CHECK (list == NULL);
 
 	// Création de la liste à partir d'un fichier ("polynomial1.txt")
-	LL_create_list_fromFileName(&list, "./files/polynomial1.txt");
+	LL_create_list_fromFileName(&list, "./files/creation/polynomial1.txt");
 	CHECK ( NULL != list);
 
 	// Vérification des éléments de la liste
@@ -394,7 +396,7 @@ TEST(LL_free_list)
 	CHECK( NULL == list );
 
 	// Libération liste remplie
-	LL_create_list_fromFileName(&list, "./files/polynomial1.txt");
+	LL_create_list_fromFileName(&list, "./files/creation/polynomial1.txt");
 	CHECK (NULL != list);
 
 	LL_free_list(&list);
@@ -413,7 +415,7 @@ TEST(LL_save_list_toFileName)
 	CHECK (list == NULL);
 
 	// Création de la liste à partir d'un fichier ("polynomial1.txt")
-	LL_create_list_fromFileName(&list, "./files/polynomial1.txt");
+	LL_create_list_fromFileName(&list, "./files/creation/polynomial1.txt");
 
 	// Vérification des éléments de la liste
 	CHECK	( list->val.coef   		  		 ==  5);
@@ -424,8 +426,16 @@ TEST(LL_save_list_toFileName)
 	CHECK	( (list->next)->next->val.degree ==  6);
 
 	// Sauvegarde de la liste dans le fichier dont le nom est spécifié
-	char * filename = "./files/polynomial1backup.txt";
+	char * filename = "./files/saves/polynomial1backup.txt";
 	LL_save_list_toFileName(list, filename, &monom_save2file);
+	FILE * file1 = fopen(filename, "r");
+	char buffer[1024];
+	fgets(buffer, 1024, file1);
+	fclose(file1);
+
+	char resultat[1024] = "(5.00, 2) (17.00, 3) (10.00, 6) ";
+	
+	CHECK(0 == strcmp(buffer, resultat));
 
 	// Libération
 	LL_free_list(&list);

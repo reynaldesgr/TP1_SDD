@@ -8,7 +8,7 @@
 
 #include <stdio.h>
 
-/** TO DO
+/** monom_t
  * @struct monom_t 
  * @brief Data structure of monomial (value of linked list's cell)
  * 2 fields :
@@ -22,7 +22,7 @@ typedef struct monom_t
 
 } monom_t;
 
-/** TO DO
+/** monom_degree_cmp
  * @brief Compare the degree of two monomials
  * @param [in] m1 address of the first monomial
  * @param [in] m2 address of the second monomial

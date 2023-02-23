@@ -17,7 +17,7 @@ void LL_init_list(cell_t **adrHeadPt)
 }
 
 
-/** TO DO
+/** LL_create_cell
  * @brief Create a new cell for linked list from its data 
  * @param [in] m address of the data
  * @return address of the new cell
@@ -25,13 +25,17 @@ void LL_init_list(cell_t **adrHeadPt)
 cell_t * LL_create_cell(monom_t * m)
 {
     cell_t * new  = (cell_t *) malloc(sizeof(cell_t));
-    new->val      = *m;
-    new->next     = NULL;
+
+    if (new != NULL)
+    {
+        new->val      = *m;
+        new->next     = NULL;
+    }
     return new;
 }
 
 
-/** TO DO
+/** LL_add_cell
  * @brief Insert a cell into a linked list at the given position
  * @param [in, out] previous_cell address of previous pointer of the cell
  * @param [in] new_cell address of the cell to be added to the linked list
@@ -60,7 +64,7 @@ void LL_add_cell(cell_t ** previous_cell, cell_t * new_cell)
 }
 
 
-/** TO DO
+/** LL_create_list_fromFileName
  * @brief Create a linked list from a file (in which the data is sorted)
  * @param [in, out] adrHeadPt address of head pointer of a linked list
  * @param [in] filename name of a file containing the data for a linked list
@@ -117,7 +121,7 @@ cell_t ** LL_create_list_fromFileName(cell_t ** adrHeadPt, char * filename)
     return adrHeadPt;
 }
 
-/** TO DO
+/** LL_save_list_toFile
  * @brief Write the linked list to an output stream
  * @param [in] stream file pointer of an output stream
  * @param [in] list head pointer of a linked list
@@ -137,7 +141,7 @@ void LL_save_list_toFile(FILE * stream, cell_t * list, void (*ptf) (FILE *, mono
     }
 } 
 
-/** TO DO
+/** LL_save_list_toFileName
  * @brief Save a linked list into a file
  * @param [in, out] list head pointer of a linked list
  * @param [in] filename name of the backup file
@@ -150,7 +154,7 @@ void LL_save_list_toFileName(cell_t * list, char * filename, void (*ptf)(FILE *,
     fclose(file);
 } 
 
-/** TO DO
+/** LL_search_prev
  * @brief Search a value in a linked list, and return the address of the previous pointer
  * @param [in] adrHeadPt address of the head pointer
  * @param [in] m address of the value to search
@@ -168,7 +172,7 @@ cell_t ** LL_search_prev(cell_t ** adrHeadPt, monom_t * m, int (*comp) (monom_t 
 }
 
 
-/** TO DO
+/** LL_dell_cell
  * @brief Delete a cell from a linked list
  * @param [in, out] previous_cell address of the previous pointer of the cell to delete
  */
@@ -190,7 +194,7 @@ void LL_del_cell(cell_t ** previous_cell)
 }
 
 
-/** TO DO
+/** LL_free_list
  * @brief Free the memory location occupied by a linked list
  * @param [in, out] adrHeadPt address of head pointer of a linked list
  */
@@ -211,7 +215,7 @@ void LL_free_list(cell_t ** adrHeadPt)
     }
 }
 
-/** Afficher la liste chaînée
+/** LL_print_stdout
  * @brief Print the list on the stdout stream
  * @param [in, out] adrHeadPt adress of head pointer of a linked list
  */

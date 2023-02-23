@@ -36,7 +36,7 @@ TEST(Poly_derive1)
 
 	file = fmemopen(buffer, 1024, "w");
 	REQUIRE ( NULL != file );
-	LL_create_list_fromFileName(&poly, "./files/poly1.txt");
+	LL_create_list_fromFileName(&poly, "./files/derivation/polyderiv1.txt");
 	LL_save_list_toFile(file, poly, monom_save2file);
 	fclose(file);
 	printf("buffer = %s\n", buffer);
@@ -68,7 +68,7 @@ TEST(Poly_derive2)
 
 	file = fmemopen(buffer, 1024, "w");
 	REQUIRE ( NULL != file );
-	LL_create_list_fromFileName(&poly, "./files/poly3.txt");
+	LL_create_list_fromFileName(&poly, "./files/derivation/poly.txt");
 	LL_save_list_toFile(file, poly, monom_save2file);
 
 	fclose(file);
@@ -113,8 +113,8 @@ TEST(Poly_addition1)
 	REQUIRE(NULL != file);
 	
 	// Récupération des polynôme via. fichiers
-	LL_create_list_fromFileName(&poly1, "./files/polyadd1.txt");
-	LL_create_list_fromFileName(&poly2, "./files/polyadd2.txt");
+	LL_create_list_fromFileName(&poly1, "./files/add/polyadd1.txt");
+	LL_create_list_fromFileName(&poly2, "./files/add/polyadd2.txt");
 
 	// Addition : P1 + P2
 	poly_add(&poly1, &poly2);
@@ -146,9 +146,9 @@ TEST(Poly_addition2)
 	REQUIRE(NULL != file);
 	
 	// Récupération des polynôme via. fichiers
-	LL_create_list_fromFileName(&poly1, "./files/polyadd1.txt");
-	LL_create_list_fromFileName(&poly2, "./files/polyadd2.txt");
-	LL_create_list_fromFileName(&poly3, "./files/polyadd3.txt");
+	LL_create_list_fromFileName(&poly1, "./files/add/polyadd1.txt");
+	LL_create_list_fromFileName(&poly2, "./files/add/polyadd2.txt");
+	LL_create_list_fromFileName(&poly3, "./files/add/polyadd3.txt");
 
 	// Addition : P1 + P1
 	poly_add(&poly1, &poly1);
@@ -194,7 +194,7 @@ TEST(Poly_addition3)
 
 
 	// Récupération des polynôme via. fichiers
-	LL_create_list_fromFileName(&poly3, "./files/polyadd4.txt");
+	LL_create_list_fromFileName(&poly3, "./files/add/polyadd4.txt");
 
 	LL_save_list_toFile(file, poly3, monom_save2file);
 	fclose(file);
@@ -269,8 +269,8 @@ TEST(Poly_produit)
 
 
 	// Récupération des polynôme via. fichiers
-	LL_create_list_fromFileName(&poly1, "./files/polyprod1.txt");
-	LL_create_list_fromFileName(&poly2, "./files/polyprod2.txt");
+	LL_create_list_fromFileName(&poly1, "./files/prod/polyprod1.txt");
+	LL_create_list_fromFileName(&poly2, "./files/prod/polyprod2.txt");
 
 	// P1 * P2
 	prod = poly_prod(poly1, poly2);
@@ -287,7 +287,7 @@ TEST(Poly_produit)
 	// P1 * P1
 	file =  fmemopen(buffer, 1024, "w");
 	//LL_free_list(&poly1);
-	LL_create_list_fromFileName(&poly1, "./files/polyprod1.txt");
+	LL_create_list_fromFileName(&poly1, "./files/prod/polyprod1.txt");
 
 	// LL_free_list(&prod);
 	prod2 = poly_prod(poly1, poly1);
@@ -315,18 +315,21 @@ TEST(LL_save_list_toFileName)
 	LL_init_list(&poly);
 
 	// Création du polynôme
-	LL_create_list_fromFileName(&poly, "./files/poly3.txt");
+	LL_create_list_fromFileName(&poly, "./files/derivation/poly.txt");
 
 	// Ecriture du polynôme dans un fichier
-	LL_save_list_toFileName(poly, "./files/polybackupfilename1.txt", monom_save2file);
-	file = fopen("./files/polybackupfilename1.txt", "r");
+	LL_save_list_toFileName(poly, "./files/saves/polybackupfilename1.txt", monom_save2file);
+	file = fopen("./files/saves/polybackupfilename1.txt", "r");
 
 	fgets(buffer, 1024, file);
+
+	printf("BUFFER = %s\n", buffer);
+	fclose(file);
 	CHECK (0 == strcmp(buffer, "(5.00, 1) (4.00, 2) (5.00, 3) (6.00, 4) (3.00, 5) "));
 	
 	// Libération
 	LL_free_list(&poly);
-	fclose(file);
+	
 }
 
 END_TEST_GROUP(polynomial)
