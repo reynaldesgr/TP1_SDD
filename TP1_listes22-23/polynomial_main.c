@@ -97,6 +97,10 @@ TEST(Poly_derive2)
 	LL_free_list(&poly);
 }
 
+// TODO
+// + Dérivation polynôme nulle
+// + Dérivation polynôme de degré 1
+
 // Test 1: Addition de deux polynômes
 TEST(Poly_addition1) 
 { 
@@ -248,6 +252,9 @@ TEST(Poly_addition3)
 	fclose(file);
 }
 
+// TODO
+// + Addition avec un polynôme nul (P1 = NULL et P2 != NULL)
+
 // Test 1 : Calcul du produit de deux polynomes
 TEST(Poly_produit)
 { 
@@ -303,6 +310,9 @@ TEST(Poly_produit)
 	LL_free_list(&poly2);
 	LL_free_list(&prod);
 }
+
+// TODO
+// Test : produit avec un polynôme NULL => polynôme NULL 
 
 // Test : Ecriture d'un polynome dans un fichier
 TEST(LL_save_list_toFileName) 

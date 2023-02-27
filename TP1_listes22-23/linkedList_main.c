@@ -25,6 +25,9 @@ TEST(monom_degree_cmp)
 	CHECK( monom_degree_cmp(&v1, &v3) == 0 );
 }
 
+// TODO
+// + TEST degré négatif ?
+
 TEST(monom_save2file) 
 {
 	monom_t v = {5., 7};
@@ -244,6 +247,7 @@ TEST(LL_save_list_toFile)
 }
 
 
+// Test : Recherche d'une cellule
 TEST(LL_search_prev) 
 { 
 	printf("\n Test : LL_search_prev... \n");
@@ -270,6 +274,9 @@ TEST(LL_search_prev)
 	// Libération
 	LL_free_list(&list);
 }
+
+// TODO
+// Recherche d'un monôme qui n'existe pas dans la liste (renverra la dernière cellule)
 
 // Test d'insertion de cellule - liste a n cellules
 TEST(LL_add_cell_n) 
@@ -322,9 +329,10 @@ TEST(LL_add_cell_n)
 
 	LL_free_list(&list);
 	CHECK (NULL == list);
-
 }
 
+// TODO
+// + Ajout d'une cellule dont le degré est déjà présent dans la liste
 
 // Test suppression d'un élément
 TEST(LL_del_cell) 
@@ -381,6 +389,9 @@ TEST(LL_del_cell)
 	LL_free_list(&list);
 
 }
+
+// TODO
+// + Suppression d'une cellule inexistante
 
 // Libération de la liste
 TEST(LL_free_list) 
