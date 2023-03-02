@@ -176,21 +176,27 @@ cell_t ** LL_search_prev(cell_t ** adrHeadPt, monom_t * m, int (*comp) (monom_t 
  * @brief Delete a cell from a linked list
  * @param [in, out] previous_cell address of the previous pointer of the cell to delete
  */
-void LL_del_cell(cell_t ** previous_cell)
+void LL_del_cell(cell_t ** previous_cell, cell_t ** adrHeadPt)
 {
     cell_t * deleted_cell;
-    
-    if (*previous_cell != NULL)
-    {
-        deleted_cell = (*previous_cell)->next;
 
-        if (deleted_cell)
-        {
-            (*previous_cell)->next = deleted_cell->next;
+    if(*previous_cell != NULL){
+        if (*previous_cell == *adrHeadPt){
+
+            deleted_cell = *adrHeadPt;
+            *adrHeadPt     = (*adrHeadPt)->next;
         }
+        else if (*previous_cell != NULL)
+        {
+            deleted_cell = (*previous_cell)->next;
 
-        free(deleted_cell);
+            if (deleted_cell)
+            {
+                (*previous_cell)->next = deleted_cell->next;
+            }
+        }
     }
+    free(deleted_cell);
 }
 
 

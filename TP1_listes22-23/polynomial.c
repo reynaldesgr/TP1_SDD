@@ -49,9 +49,11 @@ void poly_derive(cell_t ** adrPolyHeadPt)
  */
 void poly_add(cell_t ** adrPolyHeadPt1, cell_t ** adrPolyHeadPt2)
 {
-    cell_t *    current1;
-    cell_t *    current2;
-    cell_t **   previous;
+    cell_t **    current1;
+    cell_t **    current2;
+    cell_t **    previous;
+    
+    int deleted = 0;
 
     if (*adrPolyHeadPt1 == NULL && *adrPolyHeadPt2 != NULL)
     {
@@ -61,38 +63,59 @@ void poly_add(cell_t ** adrPolyHeadPt1, cell_t ** adrPolyHeadPt2)
     {
         if (*adrPolyHeadPt2 != NULL)
         {
-            current1 = *adrPolyHeadPt1;
-            current2 = *adrPolyHeadPt2;
+            current1 = adrPolyHeadPt1;
+            current2 = adrPolyHeadPt2;
 
-            while (current1 != NULL && current2 != NULL)
+            while (*current1 != NULL && *current2 != NULL)
             {
-                previous = LL_search_prev(&current1, &(current2->val), &monom_degree_cmp);
-                if (monom_degree_cmp(&((*previous)->val), &(current2->val)) < 0)
+                previous = LL_search_prev(current1, &(*current2)->val, &monom_degree_cmp);
+
+                if (monom_degree_cmp(&((*previous)->val), &(*current2)->val) < 0)
                 {
-                    if ((*previous)->next != NULL && monom_degree_cmp(&((*previous)->next->val), &(current2->val)) == 0)
+                    if ((*previous)->next != NULL && monom_degree_cmp(&((*previous)->next->val), &((*current2)->val)) == 0)
                     {
-                        (*previous)->next->val.coef += (current2->val.coef);
+                        (*previous)->next->val.coef += (*current2)->val.coef;
+                        if ((*previous)->next->val.coef == 0.)
+                        {
+                            LL_del_cell(previous, current1);
+                            deleted = 1;
+                        }
                     }
                     else
                     {
-                        LL_add_cell(previous, LL_create_cell(&(current2->val)));
+                        LL_add_cell(previous, LL_create_cell(&(*current2)->val));
                     }
                 }
                 else
                 {
-                    (*previous)->val.coef += (current2->val.coef);
+                    (*previous)->val.coef += (*current2)->val.coef;
+                    if ((*previous)->val.coef == 0.)
+                    {
+                        LL_del_cell(previous, current1);
+                        deleted = 1;
+                    }
                 }
-                current2 = current2->next;
-                current1 = current1->next;
-               
+
+                // test : cellule supprime
+                if (!deleted)
+                {   // si non : on avance
+                    current1 = &(*current1)->next;
+                }else
+                {
+                    // si oui : pas la peine d'avancer
+                    deleted = 0;
+                }
+
+                current2 = &(*current2)->next;
             }
         }
-    }
-    if (adrPolyHeadPt1 != adrPolyHeadPt2)
-    {
-        LL_free_list(adrPolyHeadPt2);
+        if (adrPolyHeadPt1 != adrPolyHeadPt2)
+        {
+            LL_free_list(adrPolyHeadPt2);
+        }
     }
 }
+
 
 /** poly_prod
  * @brief compute P1 * P2

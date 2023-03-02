@@ -13,7 +13,9 @@
 
 BEGIN_TEST_GROUP(polynomial)
 
+// Test 0 : initialisation de la liste chaînée
 TEST(LL_init_list) {
+	printf("\n> Test 0 : Initialisation de la liste chaînée...\n"); 
 	cell_t *list;
 
 	printf("\nInitialization of the linked list : \n");
@@ -22,17 +24,15 @@ TEST(LL_init_list) {
 	REQUIRE ( list == NULL );
 }
 
-// Test 1: dérivation polynômes
-// Exemple
-
+// Test 1 : dérivation d'un polynôme classique (non nul)
 TEST(Poly_derive1) 
 {
-	printf("\nTest Derivation 1...\n");
-	cell_t * poly = NULL;
+	printf("\n> Test 1 : Dérivation classique d'un polynome...\n");
+	cell_t * poly;
+	LL_init_list(&poly);
+
 	FILE   * file = NULL;
 	char   buffer[1024];
-
-	printf("\nDerive of polynomial 1 : \n");
 
 	file = fmemopen(buffer, 1024, "w");
 	REQUIRE ( NULL != file );
@@ -54,30 +54,19 @@ TEST(Poly_derive1)
 }
 
 
-// Test 2 : Dérivation polynômes
+// Test 2 : Dérivation d'un polynôme non nul et avec une constante (vérification de la suppression du monome avec la constante lors de la dérivation)
 TEST(Poly_derive2) 
 { 
-	printf("\nTest Derivation 2...\n");
+	printf("\n> Test 2 : Dérivation d'un polynome non nul avec un terme de degré 0...\n");
 	FILE   * file = NULL;
 	cell_t * poly;
 	LL_init_list(&poly);
 
 	char   buffer[1024];
 
-	printf("\nDerive of polynomial 3 : \n");
-
 	file = fmemopen(buffer, 1024, "w");
 	REQUIRE ( NULL != file );
 	LL_create_list_fromFileName(&poly, "./files/derivation/poly.txt");
-	LL_save_list_toFile(file, poly, monom_save2file);
-
-	fclose(file);
-
-	CHECK( 0 == strcmp(buffer, "(5.00, 1) (4.00, 2) (5.00, 3) (6.00, 4) (3.00, 5) ") );
-
-	file = fmemopen(buffer, 1024, "w");
-	REQUIRE ( NULL != file );
-	poly_derive(&poly);
 	LL_save_list_toFile(file, poly, monom_save2file);
 
 	fclose(file);
@@ -97,14 +86,52 @@ TEST(Poly_derive2)
 	LL_free_list(&poly);
 }
 
-// TODO
-// + Dérivation polynôme nulle
-// + Dérivation polynôme de degré 1
+// Test 3 : Dérivation d'un polynôme nul
+TEST(Poly_derive3)
+{
+	printf("\n >Test 3 : Dérivation d'un polynome nul...\n");
 
-// Test 1: Addition de deux polynômes
+	cell_t * poly;
+	LL_init_list(&poly);
+
+	poly_derive(&poly);
+	CHECK(NULL == poly);
+}
+
+// Test 4 : Dérivation d'un polynôme non nul avec uniquement une constante (vérification si la dérivation renvoie le polynôme nul)
+TEST(Poly_derive4)
+{
+	printf("\n >Test 4 : Dérivation d'un polynome de degré 0 (constante)...\n");
+	FILE * file = NULL;
+
+	cell_t * poly;
+	LL_init_list(&poly);
+
+	char buffer[1024];
+	file = fmemopen(buffer, 1024, "w");
+	REQUIRE(NULL != file);
+
+	LL_create_list_fromFileName(&poly, "./files/derivation/polycst.txt");
+	LL_save_list_toFile(file, poly, monom_save2file);
+
+	fclose(file);
+
+	CHECK( 0 == strcmp(buffer, "(5.00, 0) ") );
+
+	file = fmemopen(buffer, 1024, "w");
+	REQUIRE ( NULL != file );
+	poly_derive(&poly);
+	LL_save_list_toFile(file, poly, monom_save2file);
+
+	fclose(file);
+
+	CHECK(NULL == poly);
+}
+
+// Test 5: Addition classique de deux polynômes (sans polynômes nuls, sans monomes de même degré avec un signe opposé)
 TEST(Poly_addition1) 
 { 
-	printf("\nTest Addition 1...\n");
+	printf("\n >Test 5 : Addition classique de deux polynomes...\n");
 	cell_t * poly1;
 	cell_t * poly2;
 
@@ -131,10 +158,10 @@ TEST(Poly_addition1)
 	LL_free_list(&poly2);
 }
 
-// Test2 : Plusieurs additions...
+// Test 6 : Plusieurs additions classiques de polynômes
 TEST(Poly_addition2)
 {
-	printf("\nTest Addition 2...\n");
+	printf("\n> Test 6 : Additions classiques de polynomes...\n");
 	
 	cell_t * poly1;
 	cell_t * poly2;
@@ -182,83 +209,96 @@ TEST(Poly_addition2)
 	LL_free_list(&poly2);
 }
 
-// Test 3: Addition de polynômes 
-TEST(Poly_addition3)
-{
-	printf("\nTest Addition 3...\n");
+// Test 7 : addition d'un polynome non nul avec le polynome nul
+TEST(Poly_addition3) 
+{ 
+	printf("\n> Test 7 : Addition d'un polynome nul avec un polynome non nul ...\n");
+	cell_t * poly1;
+	cell_t * poly2;
 
-	cell_t * poly3;
-
-	LL_init_list(&poly3);
+	LL_init_list(&poly1);
+	LL_init_list(&poly2);
 
 	char buffer[1024];
 
 	FILE * file = fmemopen(buffer, 1024, "w");
 	REQUIRE(NULL != file);
-
-
-	// Récupération des polynôme via. fichiers
-	LL_create_list_fromFileName(&poly3, "./files/add/polyadd4.txt");
-
-	LL_save_list_toFile(file, poly3, monom_save2file);
-	fclose(file);
-
-	// Vérification du polynôme
-	CHECK( 0 == strcmp(buffer, "(2.00, 1) (3.00, 3) (28.00, 4) (5.00, 5) (124.00, 6) (90.00, 7) (482.00, 8) (8.00, 9) (12.00, 45) "));
-
-	// Addition avec un polynôme contenant un seul monome
-	cell_t 	* polym;
-	cell_t  * new_cell;
-	monom_t   m			= {1, 15};
-
-	new_cell = LL_create_cell(&m);
-
-	LL_init_list(&polym);
-	LL_add_cell(LL_search_prev(&polym, &m, monom_degree_cmp), new_cell);
-
-	file = fmemopen(buffer, 1024, "w");
-	poly_add(&poly3, &polym);
-
 	
-	// Récupération du polynôme dans le buffer
-	LL_save_list_toFile(file, poly3, monom_save2file);
-	fclose(file);
-	CHECK( 0 == strcmp(buffer, "(2.00, 1) (3.00, 3) (28.00, 4) (5.00, 5) (124.00, 6) (90.00, 7) (482.00, 8) (8.00, 9) (1.00, 15) (12.00, 45) "));
+	// Récupération des polynôme via. fichiers
+	LL_create_list_fromFileName(&poly1, "./files/add/polyadd1.txt");
 
-	// Pleins d'additions 
+	// Addition : P1 + P2
+	poly_add(&poly1, &poly2);
+	LL_save_list_toFile(file, poly1, monom_save2file);
+
+	fclose(file);
+
+	printf("BUFFER == %s\n", buffer);
+	CHECK(0 == strcmp(buffer, "(5.00, 1) (3.00, 2) (6.00, 3) "));
+
+	LL_free_list(&poly1);
+
 	file = fmemopen(buffer, 1024, "w");
+	LL_create_list_fromFileName(&poly2, "./files/add/polyadd2.txt");
 
-	poly_add(&poly3, &polym);
-	poly_add(&poly3, &poly3);
-	poly_add(&poly3, &polym);
-	//fclose(file);
+	poly_add(&poly1, &poly2);
 
-	// Récupération du polynôme dans le buffer
-	LL_save_list_toFile(file, poly3, monom_save2file);
-	CHECK (0 == strcmp(buffer, "(2.00, 1) (3.00, 3) (28.00, 4) (5.00, 5) (124.00, 6) (90.00, 7) (482.00, 8) (8.00, 9) (1.00, 15) (12.00, 45) "));
-
-	// Addition avec un polynôme NULL
-	LL_free_list(&polym);
-
-	poly_add(&poly3, &polym);
-
-	// Résultat de l'addition
-	LL_save_list_toFile(file, poly3, monom_save2file);
-	//fclose(file);
-	CHECK (0 == strcmp(buffer, "(2.00, 1) (3.00, 3) (28.00, 4) (5.00, 5) (124.00, 6) (90.00, 7) (482.00, 8) (8.00, 9) (1.00, 15) (12.00, 45) "));
-
-	// Libération
-	LL_free_list(&poly3);
+	LL_save_list_toFile(file, poly1, monom_save2file);
 	fclose(file);
+
+	printf("BUFFER == %s\n", buffer);
+	CHECK(0 == strcmp(buffer, "(15.00, 4) (7.00, 5) (5.00, 6) (8.00, 9) (10.00, 10) "));
+
+	LL_free_list(&poly2);
 }
 
-// TODO
-// + Addition avec un polynôme nul (P1 = NULL et P2 != NULL)
+// Test 8 : addition du polynome nul avec le polynome nul
+TEST(Poly_addition4)
+{
+	printf("\n> Test 8 : Addition de deux polynomes nuls...\n");
+	cell_t * poly1;
+	cell_t * poly2;
 
-// Test 1 : Calcul du produit de deux polynomes
+	LL_init_list(&poly1);
+	LL_init_list(&poly2);
+
+	poly_add(&poly1, &poly2);
+
+	CHECK(NULL == poly1);
+
+	poly_add(&poly2, &poly1);
+
+	CHECK(NULL == poly2);
+}
+
+// Test 9 : addition d'un polynome avec un autre polynome dont les coefficients sont opposés
+TEST(Poly_addition5)
+{
+	printf("\n> Test 9 : Addition de deux polynomes de signes opposés (P2 = - P1)...\n");
+	cell_t * poly1;
+	cell_t * poly2;
+
+	LL_init_list(&poly1);
+	LL_init_list(&poly2);
+
+	// Creation poly1
+	LL_create_list_fromFileName(&poly1, "./files/add/polyadd5.txt");
+
+	// Creation poly2
+	LL_create_list_fromFileName(&poly2, "./files/add/polyadd6.txt");
+
+	// Addition : poly1 + poly2
+	poly_add(&poly1, &poly2);
+	
+	// Verification : poly1 + poly2 = poly1 - poly1 = null
+	CHECK (NULL == poly1);
+}
+
+
+// Test 10 : Calcul du produit de deux polynomes
 TEST(Poly_produit)
 { 
-	printf("\nTest Produit 1...\n");
+	printf("\n> Test 10 : Produit classique de deux polynomes non nuls...\n");
 	
 	cell_t * prod;
 	cell_t * poly1;
@@ -311,13 +351,48 @@ TEST(Poly_produit)
 	LL_free_list(&prod);
 }
 
-// TODO
-// Test : produit avec un polynôme NULL => polynôme NULL 
+// Test 11: Produit avec un polynôme NULL => polynôme NULL 
+TEST(Poly_produit0)
+{
+	printf("\n> Test 11 : Produit d'un polynome non nul avec un polynome nul...\n");
+	cell_t * poly1;
+	cell_t * poly2;
+	cell_t * res0;
 
-// Test : Ecriture d'un polynome dans un fichier
+	LL_init_list(&poly1);
+	LL_init_list(&poly2);
+
+	// Creation poly1
+	LL_create_list_fromFileName(&poly1, "./files/add/polyadd5.txt");
+
+	// P1 = P1 * P2 avec P2 NULL
+	res0 = poly_prod(poly1, poly2);
+	
+	// Verification
+	CHECK(NULL == res0);
+}
+
+// Test 12 : Produit de deux polynômes nuls
+TEST(Poly_produit0_v2){
+	printf("\n> Test 12 : Produit d'un polynome non nul avec un polynome nul...\n");
+	cell_t * poly1;
+	cell_t * poly2;
+	cell_t * res0;
+
+	LL_init_list(&poly1);
+	LL_init_list(&poly2);
+
+	// P1 = P1 * P2 avec P2 NULL
+	res0 = poly_prod(poly1, poly2);
+	
+	// Verification
+	CHECK(NULL == res0);
+}
+
+// Test 13: Ecriture d'un polynome dans un fichier
 TEST(LL_save_list_toFileName) 
 { 
-	printf("\nTest : LL_save_list_toFileName... (Polynomial)\n");
+	printf("\n> Test 13 : Ecriture d'un polynome dans un fichier...\n");
 	cell_t * poly;
 	char     buffer[1024];
 	FILE   * file;
@@ -335,13 +410,12 @@ TEST(LL_save_list_toFileName)
 
 	printf("BUFFER = %s\n", buffer);
 	fclose(file);
-	CHECK (0 == strcmp(buffer, "(5.00, 1) (4.00, 2) (5.00, 3) (6.00, 4) (3.00, 5) "));
+	CHECK (0 == strcmp(buffer, "(5.00, 0) (8.00, 1) (15.00, 2) (24.00, 3) (15.00, 4) "));
 	
 	// Libération
 	LL_free_list(&poly);
 	
 }
-
 END_TEST_GROUP(polynomial)
 
 int main(void) {
