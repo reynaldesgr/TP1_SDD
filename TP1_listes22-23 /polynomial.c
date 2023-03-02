@@ -14,7 +14,7 @@ void poly_derive(cell_t ** adrPolyHeadPt)
     if (*adrPolyHeadPt != NULL)
     {
         cell_t *    current   = *adrPolyHeadPt;
-        cell_t **   previous = adrPolyHeadPt;
+        cell_t **   previous  = adrPolyHeadPt;
         cell_t *    temp;
         int         is_deleted;
 
