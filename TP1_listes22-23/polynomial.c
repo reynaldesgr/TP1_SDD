@@ -68,8 +68,10 @@ void poly_add(cell_t ** adrPolyHeadPt1, cell_t ** adrPolyHeadPt2)
 
             while (*current1 != NULL && *current2 != NULL)
             {
+                // Recherche de la cellule precedente 
                 previous = LL_search_prev(current1, &(*current2)->val, &monom_degree_cmp);
 
+                // Si les monomes sont de degrés différents
                 if (monom_degree_cmp(&((*previous)->val), &(*current2)->val) < 0)
                 {
                     if ((*previous)->next != NULL && monom_degree_cmp(&((*previous)->next->val), &((*current2)->val)) == 0)
@@ -81,6 +83,7 @@ void poly_add(cell_t ** adrPolyHeadPt1, cell_t ** adrPolyHeadPt2)
                             deleted = 1;
                         }
                     }
+                    // Sinon
                     else
                     {
                         LL_add_cell(previous, LL_create_cell(&(*current2)->val));
@@ -88,6 +91,7 @@ void poly_add(cell_t ** adrPolyHeadPt1, cell_t ** adrPolyHeadPt2)
                 }
                 else
                 {
+                    // Suppression des monomes de coefficients nuls
                     (*previous)->val.coef += (*current2)->val.coef;
                     if ((*previous)->val.coef == 0.)
                     {
@@ -96,19 +100,21 @@ void poly_add(cell_t ** adrPolyHeadPt1, cell_t ** adrPolyHeadPt2)
                     }
                 }
 
-                // test : cellule supprime
+                // Test : cellule supprime ?
                 if (!deleted)
-                {   // si non : on avance
+                {   // Si non : on avance
                     current1 = &(*current1)->next;
                 }else
                 {
-                    // si oui : pas la peine d'avancer
+                    // Si oui : pas la peine d'avancer
                     deleted = 0;
                 }
 
                 current2 = &(*current2)->next;
             }
         }
+
+        // Liberation 
         if (adrPolyHeadPt1 != adrPolyHeadPt2)
         {
             LL_free_list(adrPolyHeadPt2);
@@ -146,11 +152,15 @@ cell_t * poly_prod (cell_t * adrHeadPt1, cell_t * adrHeadPt2)
             prod.coef = current1->val.coef * current2->val.coef;
             prod.degree = current1->val.degree + current2->val.degree;
 
+            // Creation de la nouvelle cellule 
             new_cell = LL_create_cell(&prod);
+
+            // Recherche de la cellule precedente
             previous_cell  = LL_search_prev(&adrHeadPt, &prod, monom_degree_cmp);
 
             if(*previous_cell != NULL)
             {
+                // Si il existe deja une cellule ayant le meme degre
                 if (monom_degree_cmp(&(*previous_cell)->val, &new_cell->val) == 0)
                 {
                     (*previous_cell)->val.coef += new_cell->val.coef;
@@ -161,6 +171,7 @@ cell_t * poly_prod (cell_t * adrHeadPt1, cell_t * adrHeadPt2)
                     (*previous_cell)->next->val.coef += new_cell->val.coef;
                     free(new_cell);
                 }
+                // Sinon
                 else
                 {
                     LL_add_cell(previous_cell, new_cell);
@@ -170,9 +181,12 @@ cell_t * poly_prod (cell_t * adrHeadPt1, cell_t * adrHeadPt2)
             {
                 LL_add_cell(previous_cell, new_cell);
             }
+            // On se deplace au suivant dans le polynome 2
             current2 = current2->next;
         }
         current2 = adrHeadPt2;
+
+        // On se deplace au suivant dans le polynome 1
         current1 = current1->next;
     }
 

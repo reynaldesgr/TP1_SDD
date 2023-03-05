@@ -47,7 +47,7 @@ TEST(monom_save2file)
 	CHECK( 0 == strcmp(buffer, "(5.00, 7) ") ); 
 }
 
-// Test 2 : Initialisation d'une liste chaînée
+// Test 2 : Initialisation d'une liste chainee
 TEST(LL_init_list) 
 {
 	printf("\n> Test 2 : Initiliasation liste chainee...\n");
@@ -79,7 +79,7 @@ TEST(LL_create_cell)
 	fclose(file);
 	CHECK( 0 == strcmp(buffer, "(3.25, 17) " ));
 
-	// Libération
+	// Liberation
 	free(new);
 }
 
@@ -103,7 +103,7 @@ TEST(LL_add_cell1)
 	CHECK( list->val.degree == 17 );  
 	CHECK( list->next == NULL );
 
-	// Libération
+	// Liberation
 	LL_free_list(&list);
 }
 
@@ -129,13 +129,13 @@ TEST(LL_add_cell2)
 	LL_add_cell(&list, new);
 	CHECK( list == new ); 
 
-	// tester les valeurs de la liste
+	// Tester les valeurs de la liste
 	CHECK( list->val.coef   == 25.8 );
 	CHECK( list->val.degree == 9 	);
 	CHECK( list->next->val.coef   == 3.45);
 	CHECK( list->next->val.degree == 17);
 	
-	// Libération de la liste
+	// Liberation de la liste
 	LL_free_list(&list);
 	CHECK( NULL == list );
 }
@@ -178,7 +178,7 @@ TEST(LL_add_cell3)
 	CHECK( (list->next)->next->val.degree == 17);
 	
 
-	// Libération
+	// Liberation
 	LL_free_list(&list);
 	CHECK( NULL == list );
 
@@ -197,7 +197,7 @@ TEST(LL_create_list_fromFileName0)
 	CHECK( NULL == list );
 }
 
-// Test 8 : Création d'un polynôme à partir d'un fichier
+// Test 8 : Creation d'un polynôme a partir d'un fichier
 TEST(LL_create_list_fromFileName) 
 {
 	printf("\n> Test 8 : Creation d'un polynome a partir d'un fichier...\n");
@@ -207,11 +207,11 @@ TEST(LL_create_list_fromFileName)
 	// Initialisation de la liste
 	char * name = "./files/creation/polynomial1.txt";
 
-	// Création de la liste à partir du fichier ("polynomial1.txt")
+	// Creation de la liste à partir du fichier ("polynomial1.txt")
 	LL_create_list_fromFileName(&list, name);
 	CHECK( NULL != list );
 
-	// Vérification de la liste
+	// Verification de la liste
 	CHECK	( list->val.coef   		  		 ==  5);
 	CHECK	( list->val.degree 		  		 ==  2);
 	CHECK	( list->next->val.coef    		 == 17);
@@ -219,14 +219,12 @@ TEST(LL_create_list_fromFileName)
 	CHECK	( (list->next)->next->val.coef   == 10);
 	CHECK	( (list->next)->next->val.degree ==  6);
 
-	//LL_print_stdout(&list);
-
-	// Libération
+	// Liberation
 	LL_free_list(&list);
 }
 
 
-// Test 9 : Ecriture d'un polynôme sur un flux de sortie
+// Test 9 : Ecriture d'un polynome sur un flux de sortie
 TEST(LL_save_list_toFile) 
 {
 	printf("\n> Test 9 : Ecriture d'un polynome sur un flux de sortie...\n");	
@@ -249,7 +247,7 @@ TEST(LL_save_list_toFile)
 	CHECK (0 == strcmp(buffer, "(5.00, 2) (17.00, 3) (10.00, 6) "));
 	printf("buffer = %s\n", buffer);
 
-	// Libération
+	// Liberation
 	LL_free_list(&list);
 }
 
@@ -264,25 +262,25 @@ TEST(LL_search_prev)
 	LL_init_list(&list);
 	CHECK ( NULL == list);
 
-	// Création de la liste via. un fichier
+	// Creation de la liste via. un fichier
 	LL_create_list_fromFileName(&list, "./files/creation/polynomial3.txt");
 	CHECK (NULL != list);
 
 	CHECK (list->val.coef   == 2);
 	CHECK (list->val.degree == 1);
 
-	// Recherche de l'élément précédent le monôme {5., 6}
+	// Recherche de l'element precedent le monôme {5., 6}
 	monom_t m = {5, 6};
 	cell_t ** previous = LL_search_prev(&list, &m, &monom_degree_cmp);
 
 	CHECK ((*previous)->val.degree == 5);
 	CHECK ((*previous)->val.coef   == 3);
 
-	// Libération
+	// Liberation
 	LL_free_list(&list);
 }
 
-// Test 11 : Recherche d'un monôme qui n'existe pas dans la liste (renverra la dernière cellule)
+// Test 11 : Recherche d'un monome qui n'existe pas dans la liste (renverra la derniere cellule)
 TEST(LL_search_prev) 
 { 
 	printf("\n> Test 11 : Recherche d'un monome inexistant dans la liste...\n");
@@ -292,14 +290,14 @@ TEST(LL_search_prev)
 	LL_init_list(&list);
 	CHECK ( NULL == list);
 
-	// Création de la liste via. un fichier
+	// Creation de la liste via. un fichier
 	LL_create_list_fromFileName(&list, "./files/creation/polynomial3.txt");
 	CHECK (NULL != list);
 
 	CHECK (list->val.coef   == 2);
 	CHECK (list->val.degree == 1);
 
-	// Recherche de l'élément précédent le monôme {5., 6}
+	// Recherche de l'element precedent le monôme {5., 6}
 	monom_t m_inexistant = {15, 60};
 	cell_t ** previous = LL_search_prev(&list, &m_inexistant, &monom_degree_cmp);
 
@@ -307,11 +305,57 @@ TEST(LL_search_prev)
 	CHECK ((*previous)->val.degree == 15);
 	CHECK ((*previous)->val.coef   == 7);
 
-	// Libération
+	// Liberation
 	LL_free_list(&list);
 }
 
-// Test 12 : Insertion de cellule - liste a n cellules
+// Test 12 : Recherche de la tête de la liste (renverra la tete - car la liste est un pointeur sur la tete)
+TEST(LL_search_prev_head){
+	printf("\n> Test 12 : Recherche de la tete de liste...\n");
+	cell_t * list;
+
+	// Initialisation
+	LL_init_list(&list);
+
+	// Creation de la liste via. un fichier
+	LL_create_list_fromFileName(&list, "./files/creation/polynomial3.txt");
+
+	monom_t m = {2, 1};
+	cell_t ** previous_head = LL_search_prev(&list, &m, &monom_degree_cmp);
+
+	// Verification
+	CHECK ((*previous_head)->val.degree == 1);
+	CHECK ((*previous_head)->val.coef   == 2);
+
+	// Liberation
+	LL_free_list(&list);
+}
+
+
+// Test 13 : Recherche de la fin de la liste (renverra l'avant-dernier element)
+TEST(LL_search_prev_end){
+	printf("\n> Test 13 : Recherche du precedent du dernier element...\n");
+	cell_t * list;
+
+	// Initialisation
+	LL_init_list(&list);
+
+	// Creation de la liste via. un fichier
+	LL_create_list_fromFileName(&list, "./files/creation/polynomial3.txt");
+
+	monom_t m = {7, 15};
+	cell_t ** previous_head = LL_search_prev(&list, &m, &monom_degree_cmp);
+
+	// Verification
+	CHECK ((*previous_head)->val.degree == 7);
+	CHECK ((*previous_head)->val.coef   == 4);
+
+	// Liberation
+	LL_free_list(&list);
+
+}	
+
+// Test 14 : Insertion de cellule - liste a n cellules
 TEST(LL_add_cell_n) 
 { 
 	printf("\n> Test 12 : Insertion de cellule - liste a n cellules");
@@ -320,7 +364,7 @@ TEST(LL_add_cell_n)
 	LL_init_list(&list);
 	CHECK ( NULL == list);
 
-	// Création d'une liste à n cellules
+	// Creation d'une liste à n cellules
 	LL_create_list_fromFileName(&list, "./files/creation/polynomialn.txt");
 	CHECK (NULL != list);
 
@@ -331,15 +375,12 @@ TEST(LL_add_cell_n)
 	// Sauvegarde de la liste dans le buffer
 	LL_save_list_toFile(file, list, &monom_save2file);
 
-	// Test écriture de la liste à n cellules dans le fichier
+	// Test ecriture de la liste à n cellules dans le fichier
 	fclose(file);
 
 	CHECK( 0 == strcmp(buffer, "(185.50, 1) (584.20, 3) (574.20, 6) (457.20, 12) ")); 
-	//LL_print_stdout(&list);
-	printf("buffer : %s", buffer);
-
 	
-	/// Ajout d'un monôme dans la liste à n éléments
+	/// Ajout d'un monôme dans la liste à n elements
 	monom_t   m = {5, 2};
 	cell_t *  cell = LL_create_cell(&m);
 	LL_add_cell(LL_search_prev(&list, &m, &monom_degree_cmp), cell);
@@ -348,23 +389,24 @@ TEST(LL_add_cell_n)
 	file = fmemopen(buffer, 1024, "w");
 	REQUIRE ( NULL != file);
 
-	// Test écriture
+	// Test ecriture
 	LL_save_list_toFile(file, list, &monom_save2file);
 
-	// Test écriture de la liste à n cellules dans le fichier
+	// Test ecriture de la liste à n cellules dans le fichier
 	fclose(file);
 	CHECK( 0 == strcmp(buffer, "(185.50, 1) (5.00, 2) (584.20, 3) (574.20, 6) (457.20, 12) ")); 
-	//LL_print_stdout(&list);
+
 
 	// utiliser LL_save_list_toFile pour comparer la valeur de la liste
 	// et LL_free_list
 
+	// Liberation
 	LL_free_list(&list);
 	CHECK (NULL == list);
 }
 
-// Test 13 : Ajout d'une cellule dont le degré est déjà présent dans la liste
-TEST(LL_add_cell_idem)
+// Test 15 : Ajout d'une cellule dont le degre est deja present dans la liste
+TEST(LL_add_same_cell)
 {
 	printf("\n> Test 13 : Ajout d'une cellule dont le degre est deja present dans la liste...\n"); 
 	cell_t * list = NULL;
@@ -381,17 +423,50 @@ TEST(LL_add_cell_idem)
 	// Monome a ajouter
 	monom_t m = {-5, 1};
 
-	// Création de la nouvelle cellule a ajouter
+	// Creation de la nouvelle cellule a ajouter
 	cell_t * new;
 	new = LL_create_cell(&m);
+	LL_print_stdout(&list);
 	LL_add_cell(LL_search_prev(&list, &m, &monom_degree_cmp), new);
 
 	// Teste les valeurs de la liste apres ajout
 	CHECK( list->val.coef   == -10);
 	CHECK( list->val.degree ==  1);
+	
+
+	// Liberation
+	LL_free_list(&list);
+	free(new);
 }
 
-// Test 14 : suppression classique d'un élément
+// Test 16 : Ajout cellule dans une liste vide
+TEST(LL_empty_list){
+	printf("\n> Test 16 : Ajout d'une cellule dans une liste vide..\n"); 
+	cell_t * list = NULL;
+
+	// Initialisation
+	LL_init_list(&list);
+
+	// Creation de la cellule
+	monom_t m = {5.32, 10};
+	cell_t * new;
+
+	new = LL_create_cell(&m);
+
+	LL_add_cell(&list, new);
+
+	// Teste les valeurs de la liste apres ajout
+	CHECK( list->val.coef   == 5.32);
+	CHECK( list->val.degree ==  10);
+	CHECK( list->next 		== NULL); // 1 element dans la liste seulement
+	
+
+	// Liberation
+	LL_free_list(&list);
+
+}
+
+// Test 17 : Suppression classique d'un element
 TEST(LL_del_cell) 
 {
 	printf("\n Test 14 : Suppression classique d'un element...\n");
@@ -401,11 +476,11 @@ TEST(LL_del_cell)
 	LL_init_list(&list);
 	CHECK (list == NULL);
 
-	// Création de la liste à partir d'un fichier ("polynomial1.txt")
+	// Creation de la liste à partir d'un fichier ("polynomial1.txt")
 	LL_create_list_fromFileName(&list, "./files/creation/polynomial1.txt");
 	CHECK ( NULL != list);
 
-	// Vérification des éléments de la liste
+	// Verification des elements de la liste
 	CHECK	( list->val.coef   		  		 ==  5);
 	CHECK	( list->val.degree 		  		 ==  2);
 	CHECK	( list->next->val.coef    		 == 17);
@@ -413,15 +488,12 @@ TEST(LL_del_cell)
 	CHECK	( (list->next)->next->val.coef   == 10);
 	CHECK	( (list->next)->next->val.degree ==  6);
 
-	// Recherche du monôme m = {17, 3}
+	// Recherche du monome m = {17, 3}
 	monom_t m = {17, 3};
 	cell_t ** previous_cell = LL_search_prev(&list, &m, &monom_degree_cmp);
 
 	// Suppression
 	LL_del_cell(previous_cell, &list);
-
-	// Affichage 
-	//LL_print_stdout(&list);
 
 	// Recherche du monôme m = {10, 6}
 	m.coef   = 10; 
@@ -431,10 +503,7 @@ TEST(LL_del_cell)
 	// Suppression
 	LL_del_cell(previous_cell, &list);
 
-	// Affichage 
-	//LL_print_stdout(&list);
-
-	// Cas : monôme n'appartenant pas à la liste
+	// Cas : monome n'appartenant pas a la liste
 	m.coef   = 500;
 	m.degree = 84;
 
@@ -442,13 +511,13 @@ TEST(LL_del_cell)
 	CHECK (&list == previous_cell);
 	LL_del_cell(previous_cell, &list);
 
-	// Libération
+	// Liberation
 	LL_free_list(&list);
 
 }
 
-// + Test 15 :  Suppression d'une cellule inexistante
-TEST(LL_del_cell_inexistante)
+// Test 18 :  Suppression d'une cellule inexistante
+TEST(LL_del_cell_unexisted)
 {
 	printf("\n Test 15 : Suppression d'une cellule inexistante...\n");
 	cell_t * list;
@@ -457,16 +526,17 @@ TEST(LL_del_cell_inexistante)
 	LL_init_list(&list);
 	CHECK (list == NULL);
 
-	// Création de la liste à partir d'un fichier ("polynomial1.txt")
+	// Creation de la liste à partir d'un fichier ("polynomial1.txt")
 	LL_create_list_fromFileName(&list, "./files/creation/polynomial1.txt");
 
 	// Monome qui n'exisgte pas dans la liste
 	monom_t m = {1, 10};
 
-	// Création d'une cellule inexistante dans la liste
+	// Creation d'une cellule inexistante dans la liste
 	cell_t * new = LL_create_cell(&m);
 
 	LL_del_cell(&new, &list);
+	
 
 	CHECK ( NULL != list						      );
 	CHECK ( 5 	 == list->val.coef					  );
@@ -475,9 +545,13 @@ TEST(LL_del_cell_inexistante)
 	CHECK ( 3    == (list->next)->val.degree		  );
 	CHECK (10    == ((list->next)->next)->val.coef    );
 	CHECK ( 6    == ((list->next)->next)->val.degree  );
+
+	// Liberation
+	LL_free_list(&list);
+	free(new);
 }
 
-// Test 16 : Libération de la liste
+// Test 19 : Liberation de la liste
 TEST(LL_free_list) 
 {
 	printf("\n> Test 16 : Liberation de la liste chainee...\n");
@@ -486,11 +560,11 @@ TEST(LL_free_list)
 	LL_init_list(&list);
 	CHECK (NULL == list);
 
-	// Libération liste vide
+	// Liberation liste vide
 	LL_free_list(&list);
 	CHECK( NULL == list );
 
-	// Libération liste remplie
+	// Liberation liste remplie
 	LL_create_list_fromFileName(&list, "./files/creation/polynomial1.txt");
 	CHECK (NULL != list);
 
@@ -500,7 +574,7 @@ TEST(LL_free_list)
 
 
 // BONUS - 3eme Seance
-// Test 17 : Sauvegarde de la liste dans un fichier (nom du fichier connu)
+// Test 20 : Sauvegarde de la liste dans un fichier (nom du fichier connu)
 TEST(LL_save_list_toFileName) 
 { 
 	printf("\n> Test 17 : Sauvegarde de la liste dans un fichier (nom du fichier connu)...\n");
@@ -510,10 +584,10 @@ TEST(LL_save_list_toFileName)
 	LL_init_list(&list);
 	CHECK (list == NULL);
 
-	// Création de la liste à partir d'un fichier ("polynomial1.txt")
+	// Creation de la liste à partir d'un fichier ("polynomial1.txt")
 	LL_create_list_fromFileName(&list, "./files/creation/polynomial1.txt");
 
-	// Vérification des éléments de la liste
+	// Verification des elements de la liste
 	CHECK	( list->val.coef   		  		 ==  5);
 	CHECK	( list->val.degree 		  		 ==  2);
 	CHECK	( list->next->val.coef    		 == 17);
@@ -521,7 +595,7 @@ TEST(LL_save_list_toFileName)
 	CHECK	( (list->next)->next->val.coef   == 10);
 	CHECK	( (list->next)->next->val.degree ==  6);
 
-	// Sauvegarde de la liste dans le fichier dont le nom est spécifié
+	// Sauvegarde de la liste dans le fichier dont le nom est specifie
 	char * filename = "./files/saves/polynomial1backup.txt";
 	LL_save_list_toFileName(list, filename, &monom_save2file);
 	FILE * file1 = fopen(filename, "r");
@@ -533,10 +607,37 @@ TEST(LL_save_list_toFileName)
 	
 	CHECK(0 == strcmp(buffer, resultat));
 
-	// Libération
+	// Liberation
 	LL_free_list(&list);
 }
 
+// Test 21 : Creation d'une liste/polynome a partir d'un fichier contenant de nombreux coefficients nuls 
+TEST(LL_create_poly0){
+	printf("\n> Test 18 : Creation d'un liste/polynome a partir d'un fichier contenant de nombreux coefficients nuls...\n");
+	cell_t * list;
+
+	// Initialisation de la liste
+	LL_init_list(&list);
+	CHECK (list == NULL);
+
+	// Creation de la liste à partir d'un fichier ("polynomial1.txt")
+	LL_create_list_fromFileName(&list, "./files/creation/polynomialfullof0.txt");
+
+	// Creation du flux de texte => buffer
+	char buffer[1024];
+	FILE * file = fmemopen(buffer, 1024, "w");
+	REQUIRE ( NULL != file);
+
+	// Sauvegarde de la liste dans le buffer
+	LL_save_list_toFile(file, list, &monom_save2file);
+	fclose(file);
+
+	// Verification
+	CHECK(0 == strcmp(buffer, "(1.00, 0) (5.00, 1) (6.00, 4) (15.00, 7) (4.00, 7) (1.00, 14) (5.00, 17) "));
+	
+	// Liberation 
+	LL_free_list(&list);
+}
 
 END_TEST_GROUP(linkedList)
 
